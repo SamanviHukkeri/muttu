@@ -1,0 +1,26 @@
+name: tuition_app_full
+description: Offline tuition fees & admission management (Flutter + SQLite + PDF + Export).
+publish_to: 'none'
+version: 0.2.0
+
+environment:
+  sdk: ">=2.18.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  sqflite: ^2.2.8
+  path_provider: ^2.0.11
+  path: ^1.8.3
+  pdf: ^3.10.1
+  printing: ^5.10.3
+  intl: ^0.18.1
+  csv: ^5.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
