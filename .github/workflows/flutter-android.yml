@@ -1,0 +1,51 @@
+name: Flutter Android CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run tests
+        run: flutter test
+
+      # Optional: decode your keystore (if you want to sign release APK)
+      # - name: Decode keystore and write key.properties
+      #   env:
+      #     KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+      #     KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      #     KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      #     KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      #   run: |
+      #     echo "$KEYSTORE_BASE64" | base64 --decode > upload-keystore.jks
+      #     cat > android/key.properties <<EOF
+      #     storePassword=$KEYSTORE_PASSWORD
+      #     keyPassword=$KEY_PASSWORD
+      #     keyAlias=$KEY_ALIAS
+      #     storeFile=upload-keystore.jks
+      #     EOF
+
+      - name: Build APK (release, split per ABI)
+        run: flutter build apk --release --split-per-abi
+
+      - name: Upload APKs (artifacts)
+        uses: actions/upload-artifact@v4
+        with:
+          name: APKs
+          path: build/app/outputs/**/*.apk
