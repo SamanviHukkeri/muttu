@@ -2,50 +2,33 @@ name: Flutter Android CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
-          cache: true
+          flutter-version: '3.19.0' # you can change to match your Flutter SDK version
 
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Run tests
-        run: flutter test
-
-      # Optional: decode your keystore (if you want to sign release APK)
-      # - name: Decode keystore and write key.properties
-      #   env:
-      #     KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-      #     KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-      #     KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-      #     KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-      #   run: |
-      #     echo "$KEYSTORE_BASE64" | base64 --decode > upload-keystore.jks
-      #     cat > android/key.properties <<EOF
-      #     storePassword=$KEYSTORE_PASSWORD
-      #     keyPassword=$KEY_PASSWORD
-      #     keyAlias=$KEY_ALIAS
-      #     storeFile=upload-keystore.jks
-      #     EOF
+      # ❌ Removed "flutter test" since no test folder exists
 
       - name: Build APK (release, split per ABI)
         run: flutter build apk --release --split-per-abi
 
       - name: Upload APKs (artifacts)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: APKs
-          path: build/app/outputs/**/*.apk
+          name: release-apk
+          path: build/app/outputs/flutter-apk/*.apk
