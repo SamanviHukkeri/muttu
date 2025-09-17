@@ -17,18 +17,16 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0' # you can change to match your Flutter SDK version
+          flutter-version: '3.19.0' # adjust if your Flutter version is different
 
       - name: Install dependencies
         run: flutter pub get
-
-      # ❌ Removed "flutter test" since no test folder exists
 
       - name: Build APK (release, split per ABI)
         run: flutter build apk --release --split-per-abi
 
       - name: Upload APKs (artifacts)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: release-apk
           path: build/app/outputs/flutter-apk/*.apk
